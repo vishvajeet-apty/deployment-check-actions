@@ -5,7 +5,7 @@ inputs:
   milliseconds: # change this
     required: true
     description: 'input description here'
-    default: 'default value if applicable'
+    default: 'here are the inputs that you give champ'
 runs:
   using: 'node16'
   main: 'dist/index.js'
