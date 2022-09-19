@@ -22,7 +22,7 @@ async function run(): Promise<void> {
     const region = core.getInput('REGION')
     const configPath = core.getInput('CONFIG_PATH')
     let targetBranch = core.getInput('TARGET_BRANCH')
-    
+
     // Validate and set branch Name
     const validBranchRegex =
       /(^(revert)-[0-9]{1,5}-(feature|bugfix|hotfix|onprem|test)\/(LSP|CB|AQRE|LP|ASE|CED|SAP|FR)-[0-9]{1,5}\/[0-9a-zA-Z_-]+$)|(^(feature|bugfix|hotfix|onprem|test)\/(LSP|CB|AQRE|LP|ASE|CED|SAP|FR)-[0-9]{1,5}\/[0-9a-zA-Z_-]+$)|(^(main|development|staging|production|qa|qa1|hotfix|labs|onprem|nightly)$)|((rc)-\d*.\d*.\d*)/
@@ -66,7 +66,9 @@ async function run(): Promise<void> {
       JSON.stringify({
         shouldDeploy: shouldDeploy,
         branchName,
-        ProdDeploy: ProdDeploy
+        ProdDeploy: ProdDeploy,
+        region,
+        configPath,
       })
     )
   } catch (error) {
