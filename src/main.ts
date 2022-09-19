@@ -1,7 +1,6 @@
 import * as core from '@actions/core'
 import {wait} from './wait'
-import {S3_array} from './S3'
-import * as fs from 'fs'
+
 
 async function run(): Promise<void> {
   try {
@@ -12,9 +11,7 @@ async function run(): Promise<void> {
     const eventName = process.env.GITHUB_EVENT_NAME
     const baseBranch = process.env.baseBranch
 
-    const data = fs.readFileSync('S3_file.txt')
-    console.log(data.toString())
-
+  
     core.info(JSON.stringify({
       "shouldDeploy": shouldDeploy,
       branchName,
