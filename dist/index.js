@@ -8,11 +8,7 @@ require('./sourcemap-register.js');/******/ (() => { // webpackBootstrap
 
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
 }) : (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     o[k2] = m[k];
@@ -38,12 +34,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const core = __importStar(__nccwpck_require__(186));
-const fs_1 = __importDefault(__nccwpck_require__(747));
 function run() {
     var _a;
     return __awaiter(this, void 0, void 0, function* () {
@@ -54,8 +46,11 @@ function run() {
             let NonProdDeploy = false;
             const eventName = process.env.GITHUB_EVENT_NAME;
             const baseBranch = process.env.baseBranch;
-            const data = fs_1.default.readFileSync('./S3_file.txt');
-            console.log(data.toString());
+            core.info(JSON.stringify({
+                "shouldDeploy": shouldDeploy,
+                branchName,
+                "ProdDeploy": ProdDeploy
+            }));
             // Fetch Branch Name
             if (eventName === 'pull_request') {
                 branchName = process.env.GITHUB_HEAD_REF;

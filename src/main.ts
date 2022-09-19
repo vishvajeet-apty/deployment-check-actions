@@ -1,7 +1,6 @@
 import * as core from '@actions/core'
 import {wait} from './wait'
 
-
 async function run(): Promise<void> {
   try {
     let branchName: string = ''
@@ -11,12 +10,13 @@ async function run(): Promise<void> {
     const eventName = process.env.GITHUB_EVENT_NAME
     const baseBranch = process.env.baseBranch
 
-  
-    core.info(JSON.stringify({
-      "shouldDeploy": shouldDeploy,
-      branchName,
-      "ProdDeploy": ProdDeploy
-    }))
+    core.info(
+      JSON.stringify({
+        shouldDeploy: shouldDeploy,
+        branchName,
+        ProdDeploy: ProdDeploy
+      })
+    )
 
     // Fetch Branch Name
     if (eventName === 'pull_request') {
