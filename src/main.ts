@@ -18,7 +18,11 @@ async function run(): Promise<void> {
     } else if (eventName === 'push' || eventName === 'workflow_run') {
       branchName = process.env.GITHUB_REF?.replace('refs/heads/', '')!
     }
-
+    const bucketName = core.getInput('BUCKET_NAME')
+    const region = core.getInput('REGION')
+    const configPath = core.getInput('CONFIG_PATH')
+    let targetBranch = core.getInput('TARGET_BRANCH')
+    
     // Validate and set branch Name
     const validBranchRegex =
       /(^(revert)-[0-9]{1,5}-(feature|bugfix|hotfix|onprem|test)\/(LSP|CB|AQRE|LP|ASE|CED|SAP|FR)-[0-9]{1,5}\/[0-9a-zA-Z_-]+$)|(^(feature|bugfix|hotfix|onprem|test)\/(LSP|CB|AQRE|LP|ASE|CED|SAP|FR)-[0-9]{1,5}\/[0-9a-zA-Z_-]+$)|(^(main|development|staging|production|qa|qa1|hotfix|labs|onprem|nightly)$)|((rc)-\d*.\d*.\d*)/
@@ -57,7 +61,7 @@ async function run(): Promise<void> {
       NonProdDeploy = true
     }
     core.setOutput('non_prod_deploy', NonProdDeploy)
-    
+
     core.info(
       JSON.stringify({
         shouldDeploy: shouldDeploy,
