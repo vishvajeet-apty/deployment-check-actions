@@ -1,7 +1,7 @@
 import * as core from '@actions/core'
 import {wait} from './wait'
 import {S3_array} from './S3'
-import fs from 'fs'
+import * as fs from 'fs'
 
 async function run(): Promise<void> {
   try {
@@ -12,7 +12,7 @@ async function run(): Promise<void> {
     const eventName = process.env.GITHUB_EVENT_NAME
     const baseBranch = process.env.baseBranch
 
-    const data = fs.readFileSync('./S3_file.txt')
+    const data = fs.readFileSync('S3_file.txt')
     console.log(data.toString())
 
     core.info(JSON.stringify({
@@ -20,7 +20,7 @@ async function run(): Promise<void> {
       branchName,
       "ProdDeploy": ProdDeploy
     }))
-    
+
     // Fetch Branch Name
     if (eventName === 'pull_request') {
       branchName = process.env.GITHUB_HEAD_REF!
