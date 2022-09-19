@@ -36,16 +36,50 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const core = __importStar(__nccwpck_require__(186));
-const wait_1 = __nccwpck_require__(817);
 function run() {
+    var _a;
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const ms = core.getInput('milliseconds');
-            core.debug(`Waiting ${ms} milliseconds ...`); // debug is only output if you set the secret `ACTIONS_STEP_DEBUG` to true
-            core.debug(new Date().toTimeString());
-            yield (0, wait_1.wait)(parseInt(ms, 10));
-            core.debug(new Date().toTimeString());
-            core.setOutput('time', new Date().toTimeString());
+            let branchName = '';
+            let shouldDeploy = false;
+            let ProdDeploy = false;
+            let NonProdDeploy = false;
+            const eventName = process.env.GITHUB_EVENT_NAME;
+            const baseBranch = process.env.baseBranch;
+            // Fetch Branch Name
+            if (eventName === 'pull_request') {
+                branchName = process.env.GITHUB_HEAD_REF;
+            }
+            else if (eventName === 'push' || eventName === 'workflow_run') {
+                branchName = (_a = process.env.GITHUB_REF) === null || _a === void 0 ? void 0 : _a.replace('refs/heads/', '');
+            }
+            // Validate and set branch Name
+            const validBranchRegex = /(^(revert)-[0-9]{1,5}-(feature|bugfix|hotfix|onprem|test)\/(LSP|CB|AQRE|LP|ASE|CED|SAP|FR)-[0-9]{1,5}\/[0-9a-zA-Z_-]+$)|(^(feature|bugfix|hotfix|onprem|test)\/(LSP|CB|AQRE|LP|ASE|CED|SAP|FR)-[0-9]{1,5}\/[0-9a-zA-Z_-]+$)|(^(main|development|staging|production|qa|qa1|hotfix|labs|onprem|nightly)$)|((rc)-\d*.\d*.\d*)/;
+            if (!validBranchRegex.test(branchName)) {
+                core.setFailed(`Branch Name should be in the regex format ${validBranchRegex}`);
+            }
+            else {
+                core.setOutput('branch_name', branchName);
+            }
+            // Calculate should_deploy and set as output
+            const deployableBranches = ['development', 'qa', 'staging', 'production', 'labs', 'qa1', 'hotfix'];
+            if (deployableBranches.includes(branchName)) {
+                shouldDeploy = true;
+            }
+            core.setOutput('should_deploy', shouldDeploy);
+            // Check if it's Staging or Productions or labs
+            const ProdBranches = ['staging', 'production', 'labs'];
+            if (ProdBranches.includes(branchName)) {
+                ProdDeploy = true;
+            }
+            core.setOutput('prod_deploy', ProdDeploy);
+            // Check if it's Dev or QA
+            const NonProdBranches = ['development', 'qa', 'qa1', 'hotfix'];
+            if (NonProdBranches.includes(branchName)) {
+                NonProdDeploy = true;
+            }
+            core.setOutput('non_prod_deploy', NonProdDeploy);
+            core.setOutput('base_branch', baseBranch);
         }
         catch (error) {
             if (error instanceof Error)
@@ -54,37 +88,6 @@ function run() {
     });
 }
 run();
-
-
-/***/ }),
-
-/***/ 817:
-/***/ (function(__unused_webpack_module, exports) {
-
-"use strict";
-
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.wait = void 0;
-function wait(milliseconds) {
-    return __awaiter(this, void 0, void 0, function* () {
-        return new Promise(resolve => {
-            if (isNaN(milliseconds)) {
-                throw new Error('milliseconds not a number');
-            }
-            setTimeout(() => resolve('done!'), milliseconds);
-        });
-    });
-}
-exports.wait = wait;
 
 
 /***/ }),
