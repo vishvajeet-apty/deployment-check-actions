@@ -5,6 +5,9 @@ inputs:
   BRANCH_NAME:
     required: true
     description: "the name of the current branch"
+  ENVIRONMENT_NAME:
+    required: true
+    description: "the name of the environment variable"
   BUCKET_NAME:
     required: true
     description: 'AWS S3 bucket to push the data'
