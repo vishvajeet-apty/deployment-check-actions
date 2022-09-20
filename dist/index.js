@@ -36,7 +36,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const core = __importStar(__nccwpck_require__(186));
-const deployed_branches = (/* unused pure expression or super */ null && (["rc.18", "rc.19", "rc.20", "rc.21", "rc.22"]));
+const deployed_branches = (/* unused pure expression or super */ null && (['rc.18', 'rc.19', 'rc.20', 'rc.21', 'rc.22']));
 function run() {
     var _a;
     return __awaiter(this, void 0, void 0, function* () {
@@ -96,7 +96,7 @@ function run() {
                 branchName,
                 ProdDeploy: ProdDeploy,
                 region,
-                configPath,
+                configPath
             }));
         }
         catch (error) {
