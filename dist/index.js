@@ -40,7 +40,6 @@ const deployed_branches = (/* unused pure expression or super */ null && (['rc.1
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            let branchName = '';
             let shouldDeploy = false;
             let ProdDeploy = true;
             let NonProdDeploy = false;
@@ -51,6 +50,7 @@ function run() {
             // } else if (eventName === 'push' || eventName === 'workflow_run') {
             //   branchName = process.env.GITHUB_REF?.replace('refs/heads/', '')!
             // }
+            const branchName = core.getInput('BRANCH_NAME');
             const bucketName = core.getInput('BUCKET_NAME');
             const region = core.getInput('REGION');
             const configPath = core.getInput('CONFIG_PATH');
