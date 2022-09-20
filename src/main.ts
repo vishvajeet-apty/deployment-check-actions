@@ -67,7 +67,8 @@ async function run(): Promise<void> {
         branchName,
         ProdDeploy: ProdDeploy,
         region,
-        configPath
+        configPath,
+        targetBranch
       })
     )
   } catch (error) {

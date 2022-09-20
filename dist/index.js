@@ -96,7 +96,8 @@ function run() {
                 branchName,
                 ProdDeploy: ProdDeploy,
                 region,
-                configPath
+                configPath,
+                targetBranch,
             }));
         }
         catch (error) {
