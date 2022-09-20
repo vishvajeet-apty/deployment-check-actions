@@ -2,7 +2,7 @@ import {S3, config} from 'aws-sdk'
 import {AWSConfig, S3Base} from './types/aws.types'
 import * as core from '@actions/core'
 
-const s3 = new S3()
+const s3 = new S3({})
 
 export const initAWS = (input: AWSConfig): void => {
   config.update({
