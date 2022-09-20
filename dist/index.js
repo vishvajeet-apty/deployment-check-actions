@@ -36,6 +36,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const core = __importStar(__nccwpck_require__(186));
+const deployed_branches = (/* unused pure expression or super */ null && (["rc.18", "rc.19", "rc.20", "rc.21", "rc.22"]));
 function run() {
     var _a;
     return __awaiter(this, void 0, void 0, function* () {
@@ -45,12 +46,6 @@ function run() {
             let ProdDeploy = false;
             let NonProdDeploy = false;
             const eventName = process.env.GITHUB_EVENT_NAME;
-            const baseBranch = process.env.baseBranch;
-            core.info(JSON.stringify({
-                "shouldDeploy": shouldDeploy,
-                branchName,
-                "ProdDeploy": ProdDeploy
-            }));
             // Fetch Branch Name
             if (eventName === 'pull_request') {
                 branchName = process.env.GITHUB_HEAD_REF;
@@ -58,6 +53,10 @@ function run() {
             else if (eventName === 'push' || eventName === 'workflow_run') {
                 branchName = (_a = process.env.GITHUB_REF) === null || _a === void 0 ? void 0 : _a.replace('refs/heads/', '');
             }
+            const bucketName = core.getInput('BUCKET_NAME');
+            const region = core.getInput('REGION');
+            const configPath = core.getInput('CONFIG_PATH');
+            let targetBranch = core.getInput('TARGET_BRANCH');
             // Validate and set branch Name
             const validBranchRegex = /(^(revert)-[0-9]{1,5}-(feature|bugfix|hotfix|onprem|test)\/(LSP|CB|AQRE|LP|ASE|CED|SAP|FR)-[0-9]{1,5}\/[0-9a-zA-Z_-]+$)|(^(feature|bugfix|hotfix|onprem|test)\/(LSP|CB|AQRE|LP|ASE|CED|SAP|FR)-[0-9]{1,5}\/[0-9a-zA-Z_-]+$)|(^(main|development|staging|production|qa|qa1|hotfix|labs|onprem|nightly)$)|((rc)-\d*.\d*.\d*)/;
             if (!validBranchRegex.test(branchName)) {
@@ -92,7 +91,13 @@ function run() {
                 NonProdDeploy = true;
             }
             core.setOutput('non_prod_deploy', NonProdDeploy);
-            core.setOutput('base_branch', baseBranch);
+            core.info(JSON.stringify({
+                shouldDeploy: shouldDeploy,
+                branchName,
+                ProdDeploy: ProdDeploy,
+                region,
+                configPath,
+            }));
         }
         catch (error) {
             if (error instanceof Error)

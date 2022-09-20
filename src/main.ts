@@ -1,7 +1,7 @@
 import * as core from '@actions/core'
 import {wait} from './wait'
 
-const deployed_branches = ["rc.18","rc.19","rc.20","rc.21","rc.22"];
+const deployed_branches = ['rc.18', 'rc.19', 'rc.20', 'rc.21', 'rc.22']
 
 async function run(): Promise<void> {
   try {
@@ -10,8 +10,7 @@ async function run(): Promise<void> {
     let ProdDeploy = false
     let NonProdDeploy = false
     const eventName = process.env.GITHUB_EVENT_NAME
-  
-    
+
     // Fetch Branch Name
     if (eventName === 'pull_request') {
       branchName = process.env.GITHUB_HEAD_REF!
@@ -68,7 +67,7 @@ async function run(): Promise<void> {
         branchName,
         ProdDeploy: ProdDeploy,
         region,
-        configPath,
+        configPath
       })
     )
   } catch (error) {
