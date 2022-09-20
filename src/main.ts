@@ -5,7 +5,7 @@ const deployed_branches = ['rc.18', 'rc.19', 'rc.20', 'rc.21', 'rc.22']
 
 async function run(): Promise<void> {
   try {
-    let branchName: string = ''
+    
     let shouldDeploy = false
     let ProdDeploy = true
     let NonProdDeploy = false
@@ -17,10 +17,11 @@ async function run(): Promise<void> {
     // } else if (eventName === 'push' || eventName === 'workflow_run') {
     //   branchName = process.env.GITHUB_REF?.replace('refs/heads/', '')!
     // }
-    const bucketName = core.getInput('BUCKET_NAME')
-    const region = core.getInput('REGION')
-    const configPath = core.getInput('CONFIG_PATH')
-    let targetBranch = core.getInput('TARGET_BRANCH')
+    const branchName = core.getInput('BRANCH_NAME');
+    const bucketName = core.getInput('BUCKET_NAME');
+    const region = core.getInput('REGION');
+    const configPath = core.getInput('CONFIG_PATH');
+    let targetBranch = core.getInput('TARGET_BRANCH');
 
     // Validate and set branch Name
     // const validBranchRegex =
