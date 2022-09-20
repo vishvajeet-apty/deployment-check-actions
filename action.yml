@@ -2,6 +2,10 @@ name: 'Your name here'
 description: 'Provide a description here'
 author: 'Your name or organization here'
 inputs:
+
+  BRANCH_NAME:
+    required: true
+    description: "the name of the current branch"
   BUCKET_NAME:
     required: true
     description: 'AWS S3 bucket to push the data'
