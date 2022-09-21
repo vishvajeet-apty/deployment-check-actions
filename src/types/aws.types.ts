@@ -7,13 +7,11 @@ export interface S3Base {
   Key: string
 }
 
-
 export type BundleConfig = {
-    name: string;
-    path: string
-    size: string;
-    change?: string;
-    sizeNumber?: number;
-    targetBranchName?: string;
-  }
-  
+  name: string
+  path: string
+  size: string
+  change?: string
+  sizeNumber?: number
+  targetBranchName?: string
+}

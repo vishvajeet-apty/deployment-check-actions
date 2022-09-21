@@ -1,6 +1,6 @@
 import {S3, config} from 'aws-sdk'
 import {AWSConfig, S3Base} from './types/aws.types'
-import { fromNodeProviderChain } from "@aws-sdk/credential-providers";
+import {fromNodeProviderChain} from '@aws-sdk/credential-providers'
 
 import * as core from '@actions/core'
 
@@ -13,7 +13,6 @@ export const initAWS = (input: AWSConfig): void => {
 }
 
 //create the file if it doesn't exist
-
 
 export const getS3Object = async <T = []>({
   Bucket,
@@ -34,11 +33,9 @@ export const getS3Object = async <T = []>({
   })
 }
 
-export const isFileExists = async (
-  input: S3Base
-): Promise<boolean> => {
+export const isFileExists = async (input: S3Base): Promise<boolean> => {
   return new Promise(res => {
-    getS3Object({ ...input })
+    getS3Object({...input})
       .then(() => {
         return res(true)
       })
