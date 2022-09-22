@@ -31,6 +31,10 @@ async function run(): Promise<void> {
           })
       })
     }
+    const obj1 = {
+      name: 'vishvajeet singh',
+      what: 'okkkaaaa'
+    }
     // if the event is push then get the object if it exists append it to the object file and push it to bucket back
     // if there is no object in the first place then create the object and ...
     const isTargetFileExists = await isFileExists({
@@ -45,7 +49,7 @@ async function run(): Promise<void> {
       var params = {
         Bucket: bucketName,
         Key: `abc/${branchName}.json`,
-        Body: 'something is put inside this object'
+        Body: `${obj1}`
       }
 
       await createObject(params)
@@ -54,7 +58,7 @@ async function run(): Promise<void> {
         Bucket: bucketName,
         Key: `abc/${branchName}.json`
       })
-      core.info(JSON.parse(targetBranchData.toString()));
+      core.info(JSON.parse(targetBranchData.toString()))
     }
 
     core.info(
