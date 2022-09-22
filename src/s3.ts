@@ -5,7 +5,7 @@ import {fromNodeProviderChain} from '@aws-sdk/credential-providers'
 import * as core from '@actions/core'
 
 const s3 = new S3({})
-s3.listObjects
+
 export const initAWS = (input: AWSConfig): void => {
   config.update({
     ...input
@@ -25,7 +25,7 @@ export const getS3Object = async <T = []>({
         return rej(err)
       }
       if (data?.Body) {
-        return res(JSON.parse(data.Body?.toString()))
+        return res(JSON.parse(data.Body.toString()))
       } else {
         return res([])
       }

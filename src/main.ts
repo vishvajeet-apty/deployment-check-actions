@@ -54,6 +54,7 @@ async function run(): Promise<void> {
         Bucket: bucketName,
         Key: `abc/${branchName}.json`
       })
+      core.info(JSON.parse(targetBranchData.toString()));
     }
 
     core.info(
