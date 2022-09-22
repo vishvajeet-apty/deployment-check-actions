@@ -67,15 +67,18 @@ async function run(): Promise<void> {
         eventName
       })
     )
-    if (eventName === 'push') {
-      if (targetBranchData.length > 0) {
-        core.info(`${targetBranchData}`)
-      } else {
-        // I will create the array and then push to the
-        const array = [branchName]
-        //push into the S3 here
-      }
-    }
+    // if(eventName==='push')
+    // {
+    //   if(targetBranchData.length>0)
+    //   {
+    //       core.info(`${targetBranchData}`);
+    //   }
+    //   else{
+    //     // I will create the array and then push to the
+    //     const array = [branchName];
+    //     //push into the S3 here
+    //   }
+    // }
   } catch (error) {
     if (error instanceof Error) core.setFailed(error.message)
   }
