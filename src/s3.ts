@@ -1,5 +1,5 @@
 import {S3, config} from 'aws-sdk'
-import {AWSConfig, S3Base} from './types/aws.types'
+import {AWSConfig, S3Base, S3Object} from './types/types'
 import {fromNodeProviderChain} from '@aws-sdk/credential-providers'
 
 import * as core from '@actions/core'
@@ -44,3 +44,26 @@ export const isFileExists = async (input: S3Base): Promise<boolean> => {
       })
   })
 }
+
+export const createObject = async (params: S3Object): Promise<void> => {
+  return new Promise((res, rej) => {
+    core.info('creating the object in the file.')
+    s3.upload(params, (err: Error, data: S3.ManagedUpload.SendData): void => {
+      if (err) {
+        core.info('error creating the folder/object')
+        return rej()
+      }
+      core.info('Successfully created the folder on the S3')
+      return res()
+    })
+  })
+}
+
+// s3.upload(params, function (err, data) {
+//   if (err) {
+//       console.log("Error creating the folder: ", err);
+//   } else {
+//       console.log("Successfully created a folder on S3");
+
+//   }
+// });
