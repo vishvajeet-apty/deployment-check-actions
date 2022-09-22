@@ -45,7 +45,7 @@ export const isFileExists = async (input: S3Base): Promise<boolean> => {
   })
 }
 
-export const createObject = async (params: S3Object): Promise<void> => {
+export async function createObject(params: S3Object): Promise<void> {
   return new Promise((res, rej) => {
     core.info('creating the object in the file.')
     s3.upload(params, (err: Error, data: S3.ManagedUpload.SendData): void => {
