@@ -35,6 +35,7 @@ async function run(): Promise<void> {
     if (!isTargetFileExists) {
       // now check the difference if any
       core.info('target branch not found for comparison')
+      // now I can create the object/file in the bucket with empty data and then push the array in the form of json to the object
     } else {
       targetBranchData = await getS3Object({
         Bucket: bucketName,
