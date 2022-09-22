@@ -24,11 +24,7 @@ export const getS3Object = async <T = []>({
       if (err) {
         return rej(err)
       }
-      if (data?.Body) {
-        return res(JSON.parse(data.Body.toString()))
-      } else {
-        return res([])
-      }
+      return (data.Body);
     })
   })
 }
