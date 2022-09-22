@@ -42,7 +42,7 @@ async function run(): Promise<void> {
       core.info('push the empty object to the bucket')
       var params = {
         Bucket: bucketName,
-        Key: `${branchName}.json`,
+        Key: `/abc/${branchName}.json`,
         Body: 'something'
       }
       await createObject(params)
