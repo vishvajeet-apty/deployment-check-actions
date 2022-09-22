@@ -48,7 +48,7 @@ export const isFileExists = async (input: S3Base): Promise<boolean> => {
 export async function createObject(params: S3Object): Promise<void> {
   return new Promise((res, rej) => {
     core.info('creating the object in the file.')
-    s3.upload(params, (err: Error, data: S3.ManagedUpload.SendData): void => {
+    s3.putObject(params, (err: Error, data: S3.PutObjectOutput): void => {
       if (err) {
         core.info('error creating the folder/object')
         return rej()
