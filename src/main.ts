@@ -46,7 +46,7 @@ async function run(): Promise<void> {
         ACL: 'public-read',
         Body: ''
       }
-      createObject(params)
+      await createObject(params)
     } else {
       targetBranchData = await getS3Object({
         Bucket: bucketName,
