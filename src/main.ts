@@ -45,7 +45,7 @@ async function run(): Promise<void> {
       var params = {
         Bucket: bucketName,
         Key: `abc/${branchName}.json`,
-        Body: 'something'
+        Body: 'something is put inside this object'
       }
 
       await createObject(params)
