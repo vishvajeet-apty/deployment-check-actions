@@ -19,6 +19,5 @@ export type BundleConfig = {
 export interface S3Object {
   Bucket: string
   Key: string
-  ACL: string
   Body: string
 }

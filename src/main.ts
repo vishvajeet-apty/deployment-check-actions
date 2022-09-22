@@ -33,7 +33,7 @@ async function run(): Promise<void> {
     // if there is no object in the first place then create the object and ...
     const isTargetFileExists = await isFileExists({
       Bucket: bucketName,
-      Key: `${branchName}.json`
+      Key: `temp.json`
     })
     if (!isTargetFileExists) {
       // now check the difference if any
@@ -43,14 +43,13 @@ async function run(): Promise<void> {
       var params = {
         Bucket: bucketName,
         Key: `testy/${branchName}.json`,
-        ACL: 'public-read',
         Body: 'something'
       }
       await createObject(params)
     } else {
       targetBranchData = await getS3Object({
         Bucket: bucketName,
-        Key: `${branchName}.json`
+        Key: `temp.json`
       })
     }
 

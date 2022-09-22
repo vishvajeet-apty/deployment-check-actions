@@ -5,7 +5,7 @@ import {fromNodeProviderChain} from '@aws-sdk/credential-providers'
 import * as core from '@actions/core'
 
 const s3 = new S3({})
-
+s3.listObjects
 export const initAWS = (input: AWSConfig): void => {
   config.update({
     ...input
