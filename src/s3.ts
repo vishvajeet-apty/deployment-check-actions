@@ -33,7 +33,14 @@ export const getS3Object = async <T = []>({
   return new Promise((res, rej) => {
     core.info(`getting data from ${Bucket} with path ${Key}`)
     s3.getObject({Bucket, Key}, (err, data) => {
-      return []
+      if (err) {
+        return rej(err)
+      }
+      if (data?.Body) {
+        return res(JSON.parse(data.Body?.toString()))
+      } else {
+        return res([])
+      }
     })
   })
 }
