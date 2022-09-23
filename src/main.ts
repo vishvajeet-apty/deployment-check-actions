@@ -57,7 +57,7 @@ async function run(): Promise<void> {
 
       await createObject(params)
     } else {
-      targetBranchData = await getS3Object({
+      await getS3Object({
         Bucket: bucketName,
         // Key: `assist/${branchName}.json`
         Key: 'abc/production.json'

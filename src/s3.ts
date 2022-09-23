@@ -25,11 +25,8 @@ export const initAWS = (input: AWSConfig): void => {
 //     })
 //   })
 // }
-
-export const getS3Object = async <T = []>({
-  Bucket,
-  Key
-}: S3Base): Promise<T | []> => {
+const actual = ['values']
+export const getS3Object = async ({Bucket, Key}: S3Base): Promise<void> => {
   return new Promise((res, rej) => {
     core.info(`getting data from ${Bucket} with path ${Key}`)
     s3.getObject({Bucket, Key}, (err, data) => {
@@ -37,9 +34,11 @@ export const getS3Object = async <T = []>({
         return rej(err)
       }
       if (data?.Body) {
-        return res(JSON.parse(data.Body?.toString()))
+        core.info('response is generated')
+        core.info(data.Body.toString())
       } else {
-        return res([])
+        core.info('nothing is presnet')
+        return
       }
     })
   })
