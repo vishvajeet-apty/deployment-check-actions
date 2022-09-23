@@ -1,7 +1,7 @@
-import {S3, config} from 'aws-sdk'
-import {AWSConfig, S3Base, S3Object} from './types/types'
+import {S3, config, AWSError} from 'aws-sdk'
+import {AWSConfig, S3Base, S3Object, BundleConfig} from './types/types'
 import {fromNodeProviderChain} from '@aws-sdk/credential-providers'
-
+import {readFileSync} from 'fs'
 import * as core from '@actions/core'
 
 const s3 = new S3({})
@@ -14,17 +14,13 @@ export const initAWS = (input: AWSConfig): void => {
 
 //create the file if it doesn't exist
 
-export const getS3Object = async <T = []>({
-  Bucket,
-  Key
-}: S3Base): Promise<T | []> => {
+export const getS3Object = async ({Bucket, Key}: S3Base): Promise<[]> => {
   return new Promise((res, rej) => {
     core.info(`getting data from ${Bucket} with path ${Key}`)
     s3.getObject({Bucket, Key}, (err, data) => {
       if (err) {
         return rej(err)
-      }
-      return (data.Body);
+      } else return res(JSON.parse(data.toString()))
     })
   })
 }
@@ -63,3 +59,7 @@ export async function createObject(params: S3Object): Promise<void> {
 
 //   }
 // });
+
+const file_config: BundleConfig[] = JSON.parse(
+  readFileSync('production.json', {encoding: 'utf-8'})
+)

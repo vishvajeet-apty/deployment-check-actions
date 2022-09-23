@@ -1,7 +1,7 @@
 import * as core from '@actions/core'
 import {context} from '@actions/github'
 import {wait} from './wait'
-import {S3} from 'aws-sdk'
+import {AWSError, S3} from 'aws-sdk'
 import {getS3Object, createObject} from './s3'
 import {S3Base, BundleConfig} from './types/types'
 const deployed_branches = ['rc.18', 'rc.19', 'rc.20', 'rc.21', 'rc.22']
@@ -35,11 +35,12 @@ async function run(): Promise<void> {
       name: 'vishvajeet singh',
       what: 'okkkaaaa'
     }
+
     // if the event is push then get the object if it exists append it to the object file and push it to bucket back
     // if there is no object in the first place then create the object and ...
     const isTargetFileExists = await isFileExists({
       Bucket: bucketName,
-      Key: `abc/${branchName}.json`
+      Key: `assist/${branchName}.json`
     })
     if (!isTargetFileExists) {
       // now check the difference if any
@@ -48,15 +49,15 @@ async function run(): Promise<void> {
       core.info('push the empty object to the bucket')
       var params = {
         Bucket: bucketName,
-        Key: `abc/${branchName}.json`,
-        Body: `${obj1}`
+        Key: `assist/${branchName}.json`,
+        Body: JSON.stringify(obj1)
       }
 
       await createObject(params)
     } else {
       targetBranchData = await getS3Object({
         Bucket: bucketName,
-        Key: `abc/${branchName}.json`
+        Key: `assist/${branchName}.json`
       })
       core.info(JSON.parse(targetBranchData.toString()))
     }
@@ -68,7 +69,6 @@ async function run(): Promise<void> {
         configPath,
         targetBranch,
         deploy_environment,
-        targetBranchData,
         eventName
       })
     )
