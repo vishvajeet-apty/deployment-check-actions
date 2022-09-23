@@ -59,7 +59,6 @@ export const getS3Object = async ({Bucket, Key}: S3Base): Promise<void> => {
               return
             }
           } else {
-            core.info('shut')
           }
         } else {
           core.info('nothing is presnet')
