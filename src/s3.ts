@@ -14,14 +14,33 @@ export const initAWS = (input: AWSConfig): void => {
 
 //create the file if it doesn't exist
 
-export const getS3Object = async ({Bucket, Key}: S3Base): Promise<[]> => {
+// export const getS3Object = async ({Bucket, Key}: S3Base): Promise<[]> => {
+//   return new Promise((res, rej) => {
+//     core.info(`getting data from ${Bucket} with path ${Key}`)
+//     s3.getObject({Bucket, Key}, (err, data) => {
+//       if (err) {
+//         return rej(err)
+//       }
+//       return res([])
+//     })
+//   })
+// }
+
+export const getS3Object = async <T = []>({
+  Bucket,
+  Key
+}: S3Base): Promise<T | []> => {
   return new Promise((res, rej) => {
     core.info(`getting data from ${Bucket} with path ${Key}`)
     s3.getObject({Bucket, Key}, (err, data) => {
       if (err) {
         return rej(err)
       }
-      return res([])
+      if (data?.Body) {
+        return res(JSON.parse(data.Body?.toString()))
+      } else {
+        return res([])
+      }
     })
   })
 }
@@ -60,11 +79,11 @@ export async function createObject(params: S3Object): Promise<void> {
 
 //   }
 // });
-try {
-  const file_config: BundleConfig[] = JSON.parse(
-    readFileSync('./src/production.json', {encoding: 'utf-8'})
-  )
-  core.info('file found')
-} catch (err) {
-  core.info('file not found')
-}
+// try {
+//   const file_config: BundleConfig[] = JSON.parse(
+//     readFileSync('./src/production.json', {encoding: 'utf-8'})
+//   )
+//   core.info('file found')
+// } catch (err) {
+//   core.info('file not found')
+// }
