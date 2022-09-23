@@ -40,7 +40,8 @@ async function run(): Promise<void> {
     // if there is no object in the first place then create the object and ...
     const isTargetFileExists = await isFileExists({
       Bucket: bucketName,
-      Key: `assist/${branchName}.json`
+      // Key: `assist/${branchName}.json`
+      Key: `abc/production.json`
     })
     if (!isTargetFileExists) {
       // now check the difference if any
@@ -49,7 +50,8 @@ async function run(): Promise<void> {
       core.info('push the empty object to the bucket')
       var params = {
         Bucket: bucketName,
-        Key: `assist/${branchName}.json`,
+        // Key: `assist/${branchName}.json`,
+        Key: 'abc/production.json',
         Body: JSON.stringify(obj1)
       }
 
@@ -57,7 +59,8 @@ async function run(): Promise<void> {
     } else {
       targetBranchData = await getS3Object({
         Bucket: bucketName,
-        Key: `assist/${branchName}.json`
+        // Key: `assist/${branchName}.json`
+        Key: 'abc/production.json'
       })
       core.info(JSON.parse(targetBranchData.toString()))
     }
