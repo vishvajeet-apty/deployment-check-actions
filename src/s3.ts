@@ -21,7 +21,7 @@ export const getS3Object = async ({Bucket, Key}: S3Base): Promise<[]> => {
       if (err) {
         return rej(err)
       }
-      return res(JSON.parse(JSON.stringify(data)))
+      return res([])
     })
   })
 }
