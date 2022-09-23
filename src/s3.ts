@@ -12,10 +12,10 @@ export const initAWS = (input: AWSConfig): void => {
   })
 }
 
-//create the file if it doesn't exist
+// create the file if it doesn't exist
 
 // export const getS3Object = async ({Bucket, Key}: S3Base): Promise<[]> => {
-//   return new Promise((res, rej) => {
+// return new Promise((res, rej) => {
 //     core.info(`getting data from ${Bucket} with path ${Key}`)
 //     s3.getObject({Bucket, Key}, (err, data) => {
 //       if (err) {
@@ -23,40 +23,58 @@ export const initAWS = (input: AWSConfig): void => {
 //       }
 //       return res([])
 //     })
-//   })
+// })
 // }
 const actual = ['values']
 export const getS3Object = async ({Bucket, Key}: S3Base): Promise<void> => {
   return new Promise((res, rej) => {
     core.info(`getting data from ${Bucket} with path ${Key}`)
-    s3.getObject({Bucket, Key}, (err, data) => {
-      if (err) {
-        return rej(err)
-      }
-      if (data?.Body) {
-        core.info('response is generated')
-        const res = data.Body.toString()
-        core.info(res)
-        core.info(eventType)
-
-        if (eventType === 'push') {
-          const new_array = JSON.parse(res)
-          new_array.branches.push('rc-54')
-          core.info(JSON.stringify(new_array))
-        } else {
-          core.info('shut')
+    s3.getObject(
+      {
+        Bucket,
+        Key
+      },
+      async (err, data) => {
+        if (err) {
+          return rej(err)
         }
-      } else {
-        core.info('nothing is presnet')
-        return
+        if (data?.Body) {
+          core.info('response is generated')
+          const res = data.Body.toString()
+          core.info(res)
+          core.info(eventType)
+
+          if (eventType === 'push') {
+            const new_array = JSON.parse(res)
+            new_array.branches.push('rc-54')
+            core.info(JSON.stringify(new_array))
+            let params = {
+              Bucket,
+              Key,
+              Body: JSON.stringify(new_array)
+            }
+            let result = await pushAgain(params)
+            if (result) {
+              core.info('succesfully pushed again')
+              return
+            }
+          } else {
+            core.info('shut')
+          }
+        } else {
+          core.info('nothing is presnet')
+          return
+        }
       }
-    })
+    )
   })
 }
 
 export const isFileExists = async (input: S3Base): Promise<boolean> => {
   return new Promise(res => {
-    getS3Object({...input})
+    getS3Object({
+      ...input
+    })
       .then(() => {
         return res(true)
       })
@@ -65,7 +83,19 @@ export const isFileExists = async (input: S3Base): Promise<boolean> => {
       })
   })
 }
-
+export async function pushAgain(params: S3Object): Promise<boolean> {
+  return new Promise((res, rej) => {
+    core.info('Pushing the array again...')
+    s3.putObject(params, (err: Error, data: S3.PutObjectOutput): void => {
+      if (err) {
+        core.info('error creating the folder/object')
+        return rej(false)
+      }
+      core.info('Successfully created the folder on the S3')
+      return res(true)
+    })
+  })
+}
 export async function createObject(params: S3Object): Promise<void> {
   return new Promise((res, rej) => {
     core.info('creating the object in the file.')
@@ -81,27 +111,27 @@ export async function createObject(params: S3Object): Promise<void> {
 }
 
 // s3.upload(params, function (err, data) {
-//   if (err) {
+// if (err) {
 //       console.log("Error creating the folder: ", err);
-//   } else {
+// } else {
 //       console.log("Successfully created a folder on S3");
 
-//   }
+// }
 // });
 // try {
-//   const file_config: BundleConfig[] = JSON.parse(
+// const file_config: BundleConfig[] = JSON.parse(
 //     readFileSync('./src/production.json', {encoding: 'utf-8'})
-//   )
-//   core.info('file found')
+// )
+// core.info('file found')
 // } catch (err) {
-//   core.info('file not found')
+// core.info('file not found')
 // }
 
 // if (github.event === 'push') {
 
-//   push: merged
+// push: merged
 
-//   read from S3
+// read from S3
 
 //     const deployedBranches = ['rc-4.18']
 
@@ -117,9 +147,9 @@ export async function createObject(params: S3Object): Promise<void> {
 
 // if (github.event === 'pull_request') {
 
-//   pull: -> PR
+// pull: -> PR
 
-//   read from S3
+// read from S3
 
 //     const deployedBranches = ['rc-4.18', 'rc-4.19']
 
