@@ -20,6 +20,9 @@ inputs:
   TARGET_BRANCH:
     required: true
     description: 'Target branch of PR'
+  EVENT_TYPE:
+    required: true
+    description: 'The event type'
 runs:
   using: 'node16'
   main: 'dist/index.js'
