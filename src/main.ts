@@ -41,7 +41,7 @@ async function run(): Promise<void> {
     const isTargetFileExists = await isFileExists({
       Bucket: bucketName,
       // Key: `assist/${branchName}.json`
-      Key: 'assist/nicer.json'
+      Key: 'assist/nicerr.json'
     })
     if (!isTargetFileExists) {
       // now check the difference if any
