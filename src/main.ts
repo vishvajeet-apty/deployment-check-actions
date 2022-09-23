@@ -13,7 +13,7 @@ async function run(): Promise<void> {
     const region = core.getInput('REGION')
     const configPath = core.getInput('CONFIG_PATH')
     const eventName = context.eventName
-    let targetBranch = 'development'
+    let targetBranch = core.getInput('TARGET_Branch')
     const deploy_environment = core.getInput('ENVIRONMENT_NAME')
     const access_key = process.env.AWS_ACCESS_KEY
     let targetBranchData: BundleConfig[] = []
