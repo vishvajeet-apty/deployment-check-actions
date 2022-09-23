@@ -36,11 +36,17 @@ export const getS3Object = async ({Bucket, Key}: S3Base): Promise<void> => {
       if (data?.Body) {
         core.info('response is generated')
         const res = data.Body.toString()
+        core.info(
+          JSON.stringify({
+            res,
+            eventType
+          })
+        )
         if (eventType === 'push') {
           const new_array = JSON.parse(res)
           new_array.branches.push('rc-54')
-          core.info(new_array.toString())
         } else {
+          core.info('shut')
         }
       } else {
         core.info('nothing is presnet')
