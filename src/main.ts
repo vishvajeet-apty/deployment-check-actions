@@ -41,7 +41,7 @@ async function run(): Promise<void> {
     const isTargetFileExists = await isFileExists({
       Bucket: bucketName,
       // Key: `assist/${branchName}.json`
-      Key: `abc/production.json`
+      Key: 'assist/nicer.json'
     })
     if (!isTargetFileExists) {
       // now check the difference if any
@@ -51,7 +51,7 @@ async function run(): Promise<void> {
       var params = {
         Bucket: bucketName,
         // Key: `assist/${branchName}.json`,
-        Key: 'abc/production.json',
+        Key: 'assist/nicerr.json',
         Body: JSON.stringify(obj1)
       }
 
@@ -60,7 +60,7 @@ async function run(): Promise<void> {
       await getS3Object({
         Bucket: bucketName,
         // Key: `assist/${branchName}.json`
-        Key: 'abc/production.json'
+        Key: 'assist/nicerr.json'
       })
       core.info(JSON.parse(targetBranchData.toString()))
     }
