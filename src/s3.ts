@@ -42,7 +42,7 @@ export const getS3Object = async ({Bucket, Key}: S3Base): Promise<void> => {
         if (eventType === 'push') {
           const new_array = JSON.parse(res)
           new_array.branches.push('rc-54')
-          core.info(new_array)
+          core.info(JSON.stringify(new_array))
         } else {
           core.info('shut')
         }
