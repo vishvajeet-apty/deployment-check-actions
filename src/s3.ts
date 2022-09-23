@@ -3,7 +3,7 @@ import {AWSConfig, S3Base, S3Object, BundleConfig} from './types/types'
 import {fromNodeProviderChain} from '@aws-sdk/credential-providers'
 import {readFileSync} from 'fs'
 import * as core from '@actions/core'
-
+import {eventType} from './main'
 const s3 = new S3({})
 
 export const initAWS = (input: AWSConfig): void => {
@@ -36,7 +36,12 @@ export const getS3Object = async ({Bucket, Key}: S3Base): Promise<void> => {
       if (data?.Body) {
         core.info('response is generated')
         const res = data.Body.toString()
-        core.info(res)
+        if (eventType === 'push') {
+          const new_array = JSON.parse(res)
+          new_array.branches.push('rc-54')
+          core.info(new_array.toString())
+        } else {
+        }
       } else {
         core.info('nothing is presnet')
         return
@@ -87,3 +92,37 @@ export async function createObject(params: S3Object): Promise<void> {
 // } catch (err) {
 //   core.info('file not found')
 // }
+
+// if (github.event === 'push') {
+
+//   push: merged
+
+//   read from S3
+
+//     const deployedBranches = ['rc-4.18']
+
+//     const currentBranch = 'rc-4.19';
+
+//     const updatedBranches = [...deployedBranches, currentBranch];
+
+//     upload to S3 -> updatedBranches
+
+//     return;
+
+// }
+
+// if (github.event === 'pull_request') {
+
+//   pull: -> PR
+
+//   read from S3
+
+//     const deployedBranches = ['rc-4.18', 'rc-4.19']
+
+//     const currentBranch = 'rc-4.19';
+
+//     if (deployedBranches.includes(currentBranch)) {
+
+//       core.error('canno deploy already deployed branches')
+
+//     }
