@@ -59,7 +59,10 @@ export async function createObject(params: S3Object): Promise<void> {
 
 //   }
 // });
-
-const file_config: BundleConfig[] = JSON.parse(
-  readFileSync('production.json', {encoding: 'utf-8'})
-)
+try {
+  const file_config: BundleConfig[] = JSON.parse(
+    readFileSync('./src/production.json', {encoding: 'utf-8'})
+  )
+} catch (err) {
+  core.info('file not found')
+}

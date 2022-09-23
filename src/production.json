@@ -1,15 +1,11 @@
 [
     {
-        "name": "Player Main Bundle",
-        "path": "./player3.0/build/chrome-prod/bundle.js"
-    },
+        "name" : "firstService"
+
+    }
+    ,
     {
-        "name": "Player Service Bundle",
-        "path": "./player3.0/build/chrome-prod/services.js"
-    },
-    {
-        "name": "Player Background Bundle",
-        "path": "./player3.0/build/chrome-prod/background.js"
+        "name" : "secondService"
     }
   ]
   
