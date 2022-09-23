@@ -69,7 +69,8 @@ async function run(): Promise<void> {
         configPath,
         targetBranch,
         deploy_environment,
-        eventName
+        eventName,
+        targetBranchData
       })
     )
     // if(eventName==='push')
