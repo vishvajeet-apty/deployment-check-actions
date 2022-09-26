@@ -48,7 +48,7 @@ export const isDeployable = async (
       const branchList = toJSON(Body.toString())
       core.info(`log: info: branchList: ${branchList} !`)
       if (branchList && branchList.branches.includes(branchName)) {
-        core.error('Cannot deploy the already deployed branches')
+        core.setFailed('Cannot deploy the already deployed branches')
       }
       return
     }
