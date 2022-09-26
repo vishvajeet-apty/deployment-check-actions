@@ -39,7 +39,7 @@ export const isDeployable = async (
       // So check if the branch exists in the array and act
       const branchArray: string[] = JSON.parse(Body.toString())
       if (branchArray.includes(branchName)) {
-        core.error('Cannot deploy the already branches')
+        core.error('Cannot deploy the already deployed branches')
       }
       return
     }
