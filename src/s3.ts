@@ -37,9 +37,9 @@ export const isDeployable = async (
     } else {
       // here the event type is pull_request
       // So check if the branch exists in the array and act
-      const branchArray = JSON.parse(Body.toString())
+      const branchArray: string[] = JSON.parse(Body.toString())
       if (branchArray.includes(branchName)) {
-        core.error('Cannot deploye the already branches')
+        core.error('Cannot deploy the already branches')
       }
       return
     }
