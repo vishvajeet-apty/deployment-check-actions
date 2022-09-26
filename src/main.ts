@@ -6,7 +6,7 @@ import {getS3Object, createObject} from './s3'
 import {S3Base, BundleConfig} from './types/types'
 const deployed_branches = ['rc.18', 'rc.19', 'rc.20', 'rc.21', 'rc.22']
 
-export const eventType = core.getInput('EVENT_TYPE')
+export let eventType = core.getInput('EVENT_TYPE')
 
 async function run(): Promise<void> {
   try {
@@ -21,9 +21,12 @@ async function run(): Promise<void> {
 
     const isFileExists = async (input: S3Base): Promise<boolean> => {
       return new Promise(res => {
-        getS3Object({
-          ...input
-        })
+        getS3Object(
+          {
+            ...input
+          },
+          branchName
+        )
           .then(() => {
             return res(true)
           })
@@ -41,7 +44,7 @@ async function run(): Promise<void> {
     const isTargetFileExists = await isFileExists({
       Bucket: bucketName,
       // Key: `assist/${branchName}.json`
-      Key: `assist/${branchName}.json`
+      Key: `assist/${deploy_environment}.json`
     })
     if (!isTargetFileExists) {
       // now check the difference if any
@@ -50,16 +53,19 @@ async function run(): Promise<void> {
       core.info('push the empty object to the bucket')
       var params = {
         Bucket: bucketName,
-        Key: `assist/${branchName}.json`,
+        Key: `assist/${deploy_environment}.json`,
         Body: JSON.stringify(branchObject)
       }
 
       await createObject(params)
     } else {
-      await getS3Object({
-        Bucket: bucketName,
-        Key: `assist/${branchName}.json`
-      })
+      await getS3Object(
+        {
+          Bucket: bucketName,
+          Key: `assist/${deploy_environment}.json`
+        },
+        branchName
+      )
       core.info(JSON.parse(targetBranchData.toString()))
     }
 

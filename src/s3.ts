@@ -12,21 +12,43 @@ export const initAWS = (input: AWSConfig): void => {
   })
 }
 
-// create the file if it doesn't exist
-
-// export const getS3Object = async ({Bucket, Key}: S3Base): Promise<[]> => {
-// return new Promise((res, rej) => {
-//     core.info(`getting data from ${Bucket} with path ${Key}`)
-//     s3.getObject({Bucket, Key}, (err, data) => {
-//       if (err) {
-//         return rej(err)
-//       }
-//       return res([])
-//     })
-// })
-// }
 const actual = ['values']
-export const getS3Object = async ({Bucket, Key}: S3Base): Promise<void> => {
+export const isDeployable = async (
+  Body: S3.Body,
+  {Bucket, Key}: S3Base,
+  branchName: string
+): Promise<void> => {
+  return new Promise(async (res, rej) => {
+    core.info('It depends on the type of event')
+    if (eventType === 'push') {
+      const branchArray = JSON.parse(Body.toString())
+      branchArray.branches.push(branchName)
+      core.info(JSON.stringify(branchArray))
+      let params = {
+        Bucket,
+        Key,
+        Body: JSON.stringify(branchArray)
+      }
+      let result = await pushAgain(params)
+      if (result) {
+        core.info('succesfully pushed again')
+        return
+      }
+    } else {
+      // here the event type is pull_request
+      // So check if the branch exists in the array and act
+      const branchArray = JSON.parse(Body.toString())
+      if (branchArray.includes(branchName)) {
+        core.error('Cannot deploye the already branches')
+      }
+      return
+    }
+  })
+}
+export const getS3Object = async (
+  {Bucket, Key}: S3Base,
+  branchName: string
+): Promise<void> => {
   return new Promise((res, rej) => {
     core.info(`getting data from ${Bucket} with path ${Key}`)
     s3.getObject(
@@ -40,28 +62,11 @@ export const getS3Object = async ({Bucket, Key}: S3Base): Promise<void> => {
         }
         if (data?.Body) {
           core.info('response is generated')
-          const res = data.Body.toString()
-          core.info(res)
+          const res = data.Body
+          await isDeployable(res, {Bucket, Key}, branchName)
           core.info(eventType)
-
-          if (eventType === 'push') {
-            const new_array = JSON.parse(res)
-            new_array.branches.push('rc-54')
-            core.info(JSON.stringify(new_array))
-            let params = {
-              Bucket,
-              Key,
-              Body: JSON.stringify(new_array)
-            }
-            let result = await pushAgain(params)
-            if (result) {
-              core.info('succesfully pushed again')
-              return
-            }
-          } else {
-          }
         } else {
-          core.info('nothing is presnet')
+          core.info('nothing is present')
           return
         }
       }
@@ -69,11 +74,17 @@ export const getS3Object = async ({Bucket, Key}: S3Base): Promise<void> => {
   })
 }
 
-export const isFileExists = async (input: S3Base): Promise<boolean> => {
+export const isFileExists = async (
+  input: S3Base,
+  branchName: string
+): Promise<boolean> => {
   return new Promise(res => {
-    getS3Object({
-      ...input
-    })
+    getS3Object(
+      {
+        ...input
+      },
+      branchName
+    )
       .then(() => {
         return res(true)
       })
@@ -87,7 +98,7 @@ export async function pushAgain(params: S3Object): Promise<boolean> {
     core.info('Pushing the array again...')
     s3.putObject(params, (err: Error, data: S3.PutObjectOutput): void => {
       if (err) {
-        core.info('error creating the folder/object')
+        core.info('Error pushing the file in the S3 object')
         return rej(false)
       }
       core.info('Successfully created the folder on the S3')
