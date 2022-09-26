@@ -41,8 +41,7 @@ export const isDeployable = async (
         return
       }
     } else {
-      // here the event type is pull_request
-      // So check if the branch exists in the array and act
+      // it is a pull request
       core.info(Body.toString())
 
       const branchList = toJSON(Body.toString())
@@ -128,54 +127,3 @@ export async function createObject(params: S3Object): Promise<void> {
     })
   })
 }
-
-// s3.upload(params, function (err, data) {
-// if (err) {
-//       console.log("Error creating the folder: ", err);
-// } else {
-//       console.log("Successfully created a folder on S3");
-
-// }
-// });
-// try {
-// const file_config: BundleConfig[] = JSON.parse(
-//     readFileSync('./src/production.json', {encoding: 'utf-8'})
-// )
-// core.info('file found')
-// } catch (err) {
-// core.info('file not found')
-// }
-
-// if (github.event === 'push') {
-
-// push: merged
-
-// read from S3
-
-//     const deployedBranches = ['rc-4.18']
-
-//     const currentBranch = 'rc-4.19';
-
-//     const updatedBranches = [...deployedBranches, currentBranch];
-
-//     upload to S3 -> updatedBranches
-
-//     return;
-
-// }
-
-// if (github.event === 'pull_request') {
-
-// pull: -> PR
-
-// read from S3
-
-//     const deployedBranches = ['rc-4.18', 'rc-4.19']
-
-//     const currentBranch = 'rc-4.19';
-
-//     if (deployedBranches.includes(currentBranch)) {
-
-//       core.error('canno deploy already deployed branches')
-
-//     }
