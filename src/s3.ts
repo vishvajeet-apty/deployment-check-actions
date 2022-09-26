@@ -13,6 +13,12 @@ export const initAWS = (input: AWSConfig): void => {
 }
 
 const actual = ['values']
+const toJSON = (input: any): any => {
+  try {
+    return JSON.parse(input)
+  } catch (e) {}
+  return undefined
+}
 export const isDeployable = async (
   Body: S3.Body,
   {Bucket, Key}: S3Base,
@@ -37,8 +43,11 @@ export const isDeployable = async (
     } else {
       // here the event type is pull_request
       // So check if the branch exists in the array and act
-      const branchArray: string[] = JSON.parse(Body.toString())
-      if (branchArray.includes(branchName)) {
+      core.info(Body.toString())
+
+      const branchList = toJSON(Body.toString())
+      core.info(`log: info: branchList: ${branchList} !`)
+      if (branchList && branchList.branches.includes(branchName)) {
         core.error('Cannot deploy the already deployed branches')
       }
       return
