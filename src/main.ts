@@ -4,6 +4,8 @@ import {wait} from './wait'
 import {AWSError, S3} from 'aws-sdk'
 import {getS3Object, updateS3Object, createObject, isS3ObjectExists} from './s3'
 import {S3Base, BundleConfig} from './types/types'
+import {FileS3} from './fileHandler'
+
 import {
   branchName,
   bucketName,
@@ -36,7 +38,7 @@ async function run(): Promise<void> {
       var params = {
         Bucket: bucketName,
         Key: `assist/${deploy_environment}.json`,
-        Body: JSON.stringify(branchObject)
+        Body: JSON.stringify(new FileS3(branchName, deploy_environment))
       }
       await createObject(params)
     }
