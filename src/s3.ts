@@ -69,12 +69,19 @@ export const getS3Object = async (
           return rej(err)
         }
         if (data?.Body) {
-          core.info('response is generated')
+          core.info('Response is generated')
           const res = data.Body
-          await isDeployable(res, {Bucket, Key}, branchName)
+          await isDeployable(
+            res,
+            {
+              Bucket,
+              Key
+            },
+            branchName
+          )
           core.info(eventType)
         } else {
-          core.info('nothing is present')
+          core.info('nothing is present inside the S3 object')
           return
         }
       }
