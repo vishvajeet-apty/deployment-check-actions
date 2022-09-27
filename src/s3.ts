@@ -57,7 +57,7 @@ export const isS3ObjectExists = async (
   {Bucket, Key}: S3Base,
   branchName: string
 ): Promise<boolean> => {
-  return new Promise((res, rej) => {
+  return new Promise(res => {
     core.info(`getting data from ${Bucket} with path ${Key}`)
     s3.getObject(
       {

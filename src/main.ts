@@ -20,7 +20,7 @@ async function run(): Promise<void> {
     let targetBranchData: BundleConfig[] = []
 
     // const isFileExists = async (input: S3Base): Promise<boolean> => {
-    //   return new Promise(res => {
+    // return new Promise(res => {
     //     getS3Object(
     //       {
     //         ...input
@@ -33,35 +33,35 @@ async function run(): Promise<void> {
     //       .catch(() => {
     //         return res(false)
     //       })
-    //   })
+    // })
     // }
     const branchObject = {
       branches: [`${branchName}`]
     }
 
     // const isTargetFileExists = await isFileExists({
-    //   Bucket: bucketName,
-    //   Key: `assist/${deploy_environment}.json`
+    // Bucket: bucketName,
+    // Key: `assist/${deploy_environment}.json`
     // })
     // if (!isTargetFileExists) {
-    //   // now check the difference if any
-    //   core.info('target branch not found for comparison')
-    //   core.info('push the empty object to the bucket')
-    //   var params = {
+    // // now check the difference if any
+    // core.info('target branch not found for comparison')
+    // core.info('push the empty object to the bucket')
+    // var params = {
     //     Bucket: bucketName,
     //     Key: `assist/${deploy_environment}.json`,
     //     Body: JSON.stringify(branchObject)
-    //   }
-    //   await createObject(params)
+    // }
+    // await createObject(params)
     // } else {
-    //   await getS3Object(
+    // await getS3Object(
     //     {
     //       Bucket: bucketName,
     //       Key: `assist/${deploy_environment}.json`
     //     },
     //     branchName
-    //   )
-    //   core.info(JSON.parse(targetBranchData.toString()))
+    // )
+    // core.info(JSON.parse(targetBranchData.toString()))
     // }
 
     if (
@@ -77,6 +77,7 @@ async function run(): Promise<void> {
     } else {
       core.info('Creater the new folder and push the things into it..')
     }
+
     core.info(
       JSON.stringify({
         branchName,
@@ -88,7 +89,10 @@ async function run(): Promise<void> {
       })
     )
   } catch (error) {
-    if (error instanceof Error) core.setFailed(error.message)
+    if (error instanceof Error) {
+      core.info('output the error!!')
+      core.setFailed(error.message)
+    }
   }
 }
 run()
