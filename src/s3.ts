@@ -58,7 +58,7 @@ export const isS3ObjectExists = async (
   branchName: string
 ): Promise<boolean> => {
   return new Promise(res => {
-    core.info(`getting data from ${Bucket} with path ${Key}`)
+    core.info(`Checking if this ${Bucket} with this path ${Key} exists or not`)
     s3.getObject(
       {
         Bucket,
@@ -101,7 +101,6 @@ export const getS3Object = async (
           //   },
           //   branchName
           // )
-          core.info(eventType)
           return res
         } else {
           core.info('nothing is present inside the S3 object')

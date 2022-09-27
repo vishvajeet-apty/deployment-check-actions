@@ -71,9 +71,13 @@ async function run(): Promise<void> {
       core.info('found the folder in the bucket')
       // update the folder
       const res = await getS3Object(
-        {Bucket: bucketName, Key: `assist/${deploy_environment}.json`},
+        {
+          Bucket: bucketName,
+          Key: `assist/${deploy_environment}.json`
+        },
         branchName
       )
+      core.info(JSON.stringify(res))
       await updateS3Object(
         res,
         {
