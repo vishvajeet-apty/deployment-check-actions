@@ -90,9 +90,10 @@ export const getS3Object = async (
         if (err) {
           return rej(err)
         }
+        let branchData: S3.Object = {}
         if (data?.Body) {
           core.info('Response is generated')
-          const res = data.Body
+          const branchData = data.Body
           // await updateS3Object(
           //   res,
           //   {
@@ -101,10 +102,10 @@ export const getS3Object = async (
           //   },
           //   branchName
           // )
-          return res
+          return res(branchData)
         } else {
           core.info('nothing is present inside the S3 object')
-          return res
+          return res(branchData)
         }
       }
     )
