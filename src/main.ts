@@ -38,7 +38,9 @@ async function run(): Promise<void> {
       var params = {
         Bucket: bucketName,
         Key: `assist/${deploy_environment}.json`,
-        Body: JSON.stringify(new FileS3(branchName, deploy_environment))
+        Body: JSON.stringify(
+          new FileS3(branchName, deploy_environment).branchObject
+        )
       }
       await createObject(params)
     }

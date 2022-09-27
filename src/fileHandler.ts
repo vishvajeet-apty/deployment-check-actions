@@ -1,7 +1,7 @@
 import {truncateSync} from 'fs'
 
 export class FileS3 {
-  private branchObject: {branches: string[]} = {
+  branchObject: {branches: string[]} = {
     branches: []
   }
 
