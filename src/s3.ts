@@ -78,7 +78,7 @@ export const isS3ObjectExists = async (
 export const getS3Object = async (
   {Bucket, Key}: S3Base,
   branchName: string
-): Promise<S3.Body> => {
+): Promise<S3.Body | undefined> => {
   return new Promise((res, rej) => {
     core.info(`getting data from ${Bucket} with path ${Key}`)
     s3.getObject(
@@ -90,18 +90,11 @@ export const getS3Object = async (
         if (err) {
           return rej(err)
         }
-        let branchData: S3.Object = {}
+        let branchData: S3.Body | undefined = data.Body
         if (data?.Body) {
           core.info('Response is generated')
-          const branchData = data.Body
-          // await updateS3Object(
-          //   res,
-          //   {
-          //     Bucket,
-          //     Key
-          //   },
-          //   branchName
-          // )
+          branchData = data.Body
+
           return res(branchData)
         } else {
           core.info('nothing is present inside the S3 object')
@@ -112,47 +105,15 @@ export const getS3Object = async (
   })
 }
 
-// export const isFileExists = async (
-//   input: S3Base,
-//   branchName: string
-// ): Promise<boolean> => {
-//   return new Promise(res => {
-//     getS3Object(
-//       {
-//         ...input
-//       },
-//       branchName
-//     )
-//       .then(() => {
-//         return res(true)
-//       })
-//       .catch(() => {
-//         return res(false)
-//       })
-//   })
-// }
-// export async function pushAgain(params: S3Object): Promise<boolean> {
-//   return new Promise((res, rej) => {
-//     core.info('Pushing the array again...')
-//     s3.putObject(params, (err: Error, data: S3.PutObjectOutput): void => {
-//       if (err) {
-//         core.info('Error pushing the file in the S3 object')
-//         return rej(false)
-//       }
-//       core.info('Successfully created the folder on the S3')
-//       return res(true)
-//     })
-//   })
-// }
 export async function createObject(params: S3Object): Promise<boolean> {
   return new Promise((res, rej) => {
-    core.info('creating the object in the file.')
+    core.info('Pushing into the object/file')
     s3.putObject(params, (err: Error, data: S3.PutObjectOutput): void => {
       if (err) {
-        core.info('error creating the folder/object')
+        core.info('error pushing into the object/file')
         return rej(false)
       }
-      core.info('Successfully created the folder on the S3')
+      core.info('Successfully Pushed the data into the object')
       return res(true)
     })
   })
