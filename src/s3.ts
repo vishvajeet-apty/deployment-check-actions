@@ -66,7 +66,7 @@ export const isS3ObjectExists = async (
       },
       async (err, data) => {
         if (err) {
-          return rej(err)
+          return res(false)
         } else {
           return res(true)
         }
