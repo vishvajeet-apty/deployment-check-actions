@@ -32,6 +32,7 @@ async function run(): Promise<void> {
         await updateS3Object(res, S3Params, branchName)
       }
     } else {
+      core.info('folder not found in the bucket so creating a new folder')
       var params = {
         Bucket: bucketName,
         Key: `assist/${deploy_environment}.json`,
