@@ -19,7 +19,7 @@ const toJSON = (input: any): any => {
   } catch (e) {}
   return undefined
 }
-export const isDeployable = async (
+export const updateS3Object = async (
   Body: S3.Body,
   {Bucket, Key}: S3Base,
   branchName: string
@@ -78,7 +78,7 @@ export const isS3ObjectExists = async (
 export const getS3Object = async (
   {Bucket, Key}: S3Base,
   branchName: string
-): Promise<void> => {
+): Promise<S3.Body> => {
   return new Promise((res, rej) => {
     core.info(`getting data from ${Bucket} with path ${Key}`)
     s3.getObject(
@@ -93,18 +93,19 @@ export const getS3Object = async (
         if (data?.Body) {
           core.info('Response is generated')
           const res = data.Body
-          await isDeployable(
-            res,
-            {
-              Bucket,
-              Key
-            },
-            branchName
-          )
+          // await updateS3Object(
+          //   res,
+          //   {
+          //     Bucket,
+          //     Key
+          //   },
+          //   branchName
+          // )
           core.info(eventType)
+          return res
         } else {
           core.info('nothing is present inside the S3 object')
-          return
+          return res
         }
       }
     )
