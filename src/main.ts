@@ -35,12 +35,12 @@ async function run(): Promise<void> {
       }
     } else {
       core.info('folder not found in the bucket so creating a new folder')
+      const fileObject = new FileS3(branchName, deploy_environment)
+
       var params = {
         Bucket: bucketName,
         Key: `assist/${deploy_environment}.json`,
-        Body: JSON.stringify(
-          new FileS3(branchName, deploy_environment).branchObject
-        )
+        Body: JSON.stringify(fileObject.getBranchObject)
       }
       await createObject(params)
     }
