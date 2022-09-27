@@ -4,6 +4,7 @@ import {fromNodeProviderChain} from '@aws-sdk/credential-providers'
 import {readFileSync} from 'fs'
 import * as core from '@actions/core'
 import {eventType} from './main'
+import {rejects} from 'assert'
 const s3 = new S3({})
 
 export const initAWS = (input: AWSConfig): void => {
@@ -12,7 +13,6 @@ export const initAWS = (input: AWSConfig): void => {
   })
 }
 
-const actual = ['values']
 const toJSON = (input: any): any => {
   try {
     return JSON.parse(input)
@@ -35,7 +35,7 @@ export const isDeployable = async (
         Key,
         Body: JSON.stringify(branchArray)
       }
-      let result = await pushAgain(params)
+      let result = await createObject(params)
       if (result) {
         core.info('succesfully pushed again')
         return
@@ -53,6 +53,28 @@ export const isDeployable = async (
     }
   })
 }
+export const isS3ObjectExists = async (
+  {Bucket, Key}: S3Base,
+  branchName: string
+): Promise<boolean> => {
+  return new Promise((res, rej) => {
+    core.info(`getting data from ${Bucket} with path ${Key}`)
+    s3.getObject(
+      {
+        Bucket,
+        Key
+      },
+      async (err, data) => {
+        if (err) {
+          return rej(err)
+        } else {
+          return res(true)
+        }
+      }
+    )
+  })
+}
+
 export const getS3Object = async (
   {Bucket, Key}: S3Base,
   branchName: string
@@ -89,48 +111,48 @@ export const getS3Object = async (
   })
 }
 
-export const isFileExists = async (
-  input: S3Base,
-  branchName: string
-): Promise<boolean> => {
-  return new Promise(res => {
-    getS3Object(
-      {
-        ...input
-      },
-      branchName
-    )
-      .then(() => {
-        return res(true)
-      })
-      .catch(() => {
-        return res(false)
-      })
-  })
-}
-export async function pushAgain(params: S3Object): Promise<boolean> {
-  return new Promise((res, rej) => {
-    core.info('Pushing the array again...')
-    s3.putObject(params, (err: Error, data: S3.PutObjectOutput): void => {
-      if (err) {
-        core.info('Error pushing the file in the S3 object')
-        return rej(false)
-      }
-      core.info('Successfully created the folder on the S3')
-      return res(true)
-    })
-  })
-}
-export async function createObject(params: S3Object): Promise<void> {
+// export const isFileExists = async (
+//   input: S3Base,
+//   branchName: string
+// ): Promise<boolean> => {
+//   return new Promise(res => {
+//     getS3Object(
+//       {
+//         ...input
+//       },
+//       branchName
+//     )
+//       .then(() => {
+//         return res(true)
+//       })
+//       .catch(() => {
+//         return res(false)
+//       })
+//   })
+// }
+// export async function pushAgain(params: S3Object): Promise<boolean> {
+//   return new Promise((res, rej) => {
+//     core.info('Pushing the array again...')
+//     s3.putObject(params, (err: Error, data: S3.PutObjectOutput): void => {
+//       if (err) {
+//         core.info('Error pushing the file in the S3 object')
+//         return rej(false)
+//       }
+//       core.info('Successfully created the folder on the S3')
+//       return res(true)
+//     })
+//   })
+// }
+export async function createObject(params: S3Object): Promise<boolean> {
   return new Promise((res, rej) => {
     core.info('creating the object in the file.')
     s3.putObject(params, (err: Error, data: S3.PutObjectOutput): void => {
       if (err) {
         core.info('error creating the folder/object')
-        return rej()
+        return rej(false)
       }
       core.info('Successfully created the folder on the S3')
-      return res()
+      return res(true)
     })
   })
 }

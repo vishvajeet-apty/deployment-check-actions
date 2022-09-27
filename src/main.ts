@@ -2,7 +2,7 @@ import * as core from '@actions/core'
 import {context} from '@actions/github'
 import {wait} from './wait'
 import {AWSError, S3} from 'aws-sdk'
-import {getS3Object, createObject} from './s3'
+import {getS3Object, createObject, isS3ObjectExists} from './s3'
 import {S3Base, BundleConfig} from './types/types'
 const deployed_branches = ['rc.18', 'rc.19', 'rc.20', 'rc.21', 'rc.22']
 
@@ -19,51 +19,64 @@ async function run(): Promise<void> {
     const access_key = process.env.AWS_ACCESS_KEY
     let targetBranchData: BundleConfig[] = []
 
-    const isFileExists = async (input: S3Base): Promise<boolean> => {
-      return new Promise(res => {
-        getS3Object(
-          {
-            ...input
-          },
-          branchName
-        )
-          .then(() => {
-            return res(true)
-          })
-          .catch(() => {
-            return res(false)
-          })
-      })
-    }
+    // const isFileExists = async (input: S3Base): Promise<boolean> => {
+    //   return new Promise(res => {
+    //     getS3Object(
+    //       {
+    //         ...input
+    //       },
+    //       branchName
+    //     )
+    //       .then(() => {
+    //         return res(true)
+    //       })
+    //       .catch(() => {
+    //         return res(false)
+    //       })
+    //   })
+    // }
     const branchObject = {
       branches: [`${branchName}`]
     }
 
-    const isTargetFileExists = await isFileExists({
-      Bucket: bucketName,
-      Key: `assist/${deploy_environment}.json`
-    })
-    if (!isTargetFileExists) {
-      // now check the difference if any
-      core.info('target branch not found for comparison')
-      core.info('push the empty object to the bucket')
-      var params = {
-        Bucket: bucketName,
-        Key: `assist/${deploy_environment}.json`,
-        Body: JSON.stringify(branchObject)
-      }
-      await createObject(params)
-    } else {
-      await getS3Object(
+    // const isTargetFileExists = await isFileExists({
+    //   Bucket: bucketName,
+    //   Key: `assist/${deploy_environment}.json`
+    // })
+    // if (!isTargetFileExists) {
+    //   // now check the difference if any
+    //   core.info('target branch not found for comparison')
+    //   core.info('push the empty object to the bucket')
+    //   var params = {
+    //     Bucket: bucketName,
+    //     Key: `assist/${deploy_environment}.json`,
+    //     Body: JSON.stringify(branchObject)
+    //   }
+    //   await createObject(params)
+    // } else {
+    //   await getS3Object(
+    //     {
+    //       Bucket: bucketName,
+    //       Key: `assist/${deploy_environment}.json`
+    //     },
+    //     branchName
+    //   )
+    //   core.info(JSON.parse(targetBranchData.toString()))
+    // }
+
+    if (
+      await isS3ObjectExists(
         {
           Bucket: bucketName,
           Key: `assist/${deploy_environment}.json`
         },
         branchName
       )
-      core.info(JSON.parse(targetBranchData.toString()))
+    ) {
+      core.info('found the folder in the bucket')
+    } else {
+      core.info('Creater the new folder and push the things into it..')
     }
-
     core.info(
       JSON.stringify({
         branchName,
