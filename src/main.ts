@@ -24,38 +24,14 @@ async function run(): Promise<void> {
       Key: `assist/${deploy_environment}.json`
     }
 
-    // if (await isS3ObjectExists(S3Params, branchName)) {
-    //   core.info('found the folder in the bucket')
-    //   // update the folder
-    //   const res = await getS3Object(S3Params, branchName)
-    //   if (res) {
-    //     await updateS3Object(res, S3Params, branchName)
-    //   }
-    //   else
-    //   {
-    //       core.setFailed()
-    //   }
-    // } else {
-    //   core.info('folder not found in the bucket so creating a new folder')
-    //   const fileObject = new FileS3(branchName, deploy_environment)
-
-    //   var params = {
-    //     Bucket: bucketName,
-    //     Key: `assist/${deploy_environment}.json`,
-    //     Body: JSON.stringify(fileObject.branchObject)
-    //   }
-    //   await createObject(params)
-    // }
     const branchObject = {
       branches: [`${branchName}`]
     }
     let fileS3Data = await getS3Object(s3Params, branchName)
     if (fileS3Data)
       core.info(`fileS3DataAfterFetching : ${fileS3Data.toString()}`)
-    if (!fileS3Data) {
-      //create object in S3
 
-      // s3Params.Body = JSON.stringify(fileS3Data);
+    if (!fileS3Data) {
       const isObjectCreated = await createObject({
         Bucket: bucketName,
         Key: `assist/${deploy_environment}.json`,
@@ -63,8 +39,8 @@ async function run(): Promise<void> {
       })
       core.info(isObjectCreated.toString())
     } else {
-      //update the object and create the object back from the new body
-      const s3Object: string[] = JSON.parse(fileS3Data.toString())
+      // update the object and create the object back from the new body
+      let s3Object = JSON.parse(fileS3Data.toString())
       core.info(`s3Object : ${JSON.stringify(s3Object)}`)
       let fileS3Object = new FileS3(s3Object)
 

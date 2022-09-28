@@ -1,10 +1,13 @@
 import {S3} from 'aws-sdk'
+import * as core from '@actions/core'
+import {countReset} from 'console'
 import {truncateSync} from 'fs'
 
 export class FileS3 {
   private branches: string[]
-  constructor(data: S3.Body) {
-    this.branches = JSON.parse(data.toString())
+
+  constructor(data: string[]) {
+    this.branches = data.filter(() => true)
   }
   addBranch(branchName: string): {allBranches: string[]} {
     const allBranches = this.branches
