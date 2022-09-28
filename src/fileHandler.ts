@@ -7,8 +7,9 @@ export class FileS3 {
     this.branches = JSON.parse(data.toString())
   }
   addBranch(branchName: string): {allBranches: string[]} {
-    this.branches.push(branchName)
-    return {allBranches: this.branches}
+    const allBranches = this.branches
+    allBranches.push(branchName)
+    return {allBranches: allBranches}
   }
   hasBranch(branchName: string): boolean {
     if (this.branches.includes(branchName)) return true
