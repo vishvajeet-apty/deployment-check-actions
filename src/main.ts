@@ -46,15 +46,18 @@ async function run(): Promise<void> {
 
       // add the branch in the object
       const branchData = fileS3Object.addBranch(branchName)
+      const branchDataObject = {
+        branches: branchData
+      }
       core.info(JSON.stringify(branchData))
       core.info('before this branch data is printed')
       await createObject({
         Bucket: bucketName,
         Key: `assist/${deploy_environment}.json`,
-        Body: JSON.stringify(branchData.allBranches)
+        Body: JSON.stringify(branchDataObject)
       })
-      const currentObject = fileS3Object.getBranches()
-      core.info(`branches : ${currentObject.toString()}`)
+      const currentObject = {branches: fileS3Object.getBranches()}
+      core.info(JSON.stringify(currentObject))
     }
     core.info(
       JSON.stringify({
