@@ -87,7 +87,7 @@ export const getS3Object = async (
         Key
       },
       async (err, data) => {
-        if (err.toString() !== 'The specified key does not exist.') {
+        if (err.message !== 'The specified key does not exist.') {
           return rej(err)
         }
         if (err) {
