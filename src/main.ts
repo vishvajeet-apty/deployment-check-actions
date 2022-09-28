@@ -64,8 +64,8 @@ async function run(): Promise<void> {
       core.info(isObjectCreated.toString())
     } else {
       //update the object and create the object back from the new body
-      const s3Object = JSON.parse(fileS3Data.toString())
-      core.info(JSON.stringify(s3Object))
+      const s3Object: string[] = JSON.parse(fileS3Data.toString())
+      core.info(`s3Object : ${JSON.stringify(s3Object)}`)
       let fileS3Object = new FileS3(s3Object)
 
       // add the branch in the object
