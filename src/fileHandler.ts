@@ -18,7 +18,7 @@ export class FileS3 {
     if (this.branches.includes(branchName)) return true
     return false
   }
-  getBranches(): string[] {
-    return this.branches
+  getBranches(): {allBranches: string[]} {
+    return {allBranches: this.branches}
   }
 }
