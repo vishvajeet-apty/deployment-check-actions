@@ -19,61 +19,61 @@ const toJSON = (input: any): any => {
   } catch (e) {}
   return undefined
 }
-export const updateS3Object = async (
-  Body: S3.Body,
-  {Bucket, Key}: S3Base,
-  branchName: string
-): Promise<void> => {
-  return new Promise(async (res, rej) => {
-    core.info('It depends on the type of event')
-    if (eventType === 'push') {
-      const branchArray = JSON.parse(Body.toString())
-      branchArray.branches.push(branchName)
-      core.info(JSON.stringify(branchArray))
-      let params = {
-        Bucket,
-        Key,
-        Body: JSON.stringify(branchArray)
-      }
-      let result = await createObject(params)
-      if (result) {
-        core.info('succesfully pushed again')
-        return
-      }
-    } else {
-      // it is a pull request
-      core.info(Body.toString())
+// export const updateS3Object = async (
+//   Body: S3.Body,
+//   {Bucket, Key}: S3Base,
+//   branchName: string
+// ): Promise<void> => {
+//   return new Promise(async (res, rej) => {
+//     core.info('It depends on the type of event')
+//     if (eventType === 'push') {
+//       const branchArray = JSON.parse(Body.toString())
+//       branchArray.branches.push(branchName)
+//       core.info(JSON.stringify(branchArray))
+//       let params = {
+//         Bucket,
+//         Key,
+//         Body: JSON.stringify(branchArray)
+//       }
+//       let result = await createObject(params)
+//       if (result) {
+//         core.info('succesfully pushed again')
+//         return
+//       }
+//     } else {
+//       // it is a pull request
+//       core.info(Body.toString())
 
-      const branchList = toJSON(Body.toString())
-      core.info(`log: info: branchList: ${branchList} !`)
-      if (branchList && branchList.branches.includes(branchName)) {
-        core.setFailed('Cannot deploy the already deployed branches')
-      }
-      return
-    }
-  })
-}
-export const isS3ObjectExists = async (
-  {Bucket, Key}: S3Base,
-  branchName: string
-): Promise<boolean> => {
-  return new Promise(res => {
-    core.info(`Checking if this ${Bucket} with this path ${Key} exists or not`)
-    s3.getObject(
-      {
-        Bucket,
-        Key
-      },
-      async (err, data) => {
-        if (err) {
-          return res(false)
-        } else {
-          return res(true)
-        }
-      }
-    )
-  })
-}
+//       const branchList = toJSON(Body.toString())
+//       core.info(`log: info: branchList: ${branchList} !`)
+//       if (branchList && branchList.branches.includes(branchName)) {
+//         core.setFailed('Cannot deploy the already deployed branches')
+//       }
+//       return
+//     }
+//   })
+// }
+// export const isS3ObjectExists = async (
+//   {Bucket, Key}: S3Base,
+//   branchName: string
+// ): Promise<boolean> => {
+//   return new Promise(res => {
+//     core.info(`Checking if this ${Bucket} with this path ${Key} exists or not`)
+//     s3.getObject(
+//       {
+//         Bucket,
+//         Key
+//       },
+//       async (err, data) => {
+//         if (err) {
+//           return res(false)
+//         } else {
+//           return res(true)
+//         }
+//       }
+//     )
+//   })
+// }
 
 export const getS3Object = async (
   {Bucket, Key}: S3Base,
@@ -87,18 +87,21 @@ export const getS3Object = async (
         Key
       },
       async (err, data) => {
-        if (err) {
+        if (err instanceof Error) {
           return rej(err)
         }
-        let branchData: S3.Body | undefined = data.Body
+        if (err) {
+          return res(undefined)
+        }
+        let s3ObjectData: S3.Body | undefined = data.Body
         if (data?.Body) {
           core.info('Response is generated')
-          branchData = data.Body
+          s3ObjectData = data.Body
 
-          return res(branchData)
+          return res(s3ObjectData)
         } else {
           core.info('nothing is present inside the S3 object')
-          return res(branchData)
+          return res(s3ObjectData)
         }
       }
     )

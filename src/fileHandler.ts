@@ -1,11 +1,17 @@
+import {S3} from 'aws-sdk'
 import {truncateSync} from 'fs'
 
 export class FileS3 {
-  branchObject: {branches: string[]} = {
-    branches: []
+  private branches
+  constructor(data: S3.Body) {
+    this.branches = JSON.parse(data.toString())
   }
-
-  constructor(branch: string, environment: string) {
-    this.branchObject.branches.push(branch)
+  addBranch(branchName: string): string[] {
+    this.branches.push(branchName)
+    return this.branches
+  }
+  hasBranch(branchName: string): boolean {
+    if (this.branches.includes(branchName)) return true
+    return false
   }
 }
