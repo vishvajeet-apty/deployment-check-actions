@@ -87,10 +87,10 @@ export const getS3Object = async (
         Key
       },
       async (err, data) => {
-        if (err.message !== 'The specified key does not exist.') {
-          return rej(err)
-        }
         if (err) {
+          if (err.message !== 'The specified key does not exist.') {
+            return rej(err)
+          }
           return res(undefined)
         }
         let s3ObjectData: S3.Body | undefined = data.Body
