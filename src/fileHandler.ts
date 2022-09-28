@@ -2,7 +2,7 @@ import {S3} from 'aws-sdk'
 import {truncateSync} from 'fs'
 
 export class FileS3 {
-  private branches
+  private branches: string[]
   constructor(data: S3.Body) {
     this.branches = JSON.parse(data.toString())
   }
