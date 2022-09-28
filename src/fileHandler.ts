@@ -7,7 +7,7 @@ export class FileS3 {
   private branches: string[]
 
   constructor(data: string[]) {
-    this.branches = data.filter(() => true)
+    this.branches = [...data]
   }
   addBranch(branchName: string): {allBranches: string[]} {
     const allBranches = this.branches
