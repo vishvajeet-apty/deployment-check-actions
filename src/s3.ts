@@ -1,61 +1,63 @@
-import {S3, config, AWSError} from 'aws-sdk'
-import {AWSConfig, S3Base, S3Object, BundleConfig} from './types/types'
-import {fromNodeProviderChain} from '@aws-sdk/credential-providers'
-import {readFileSync} from 'fs'
-import * as core from '@actions/core'
-import {eventType} from './main'
-import {rejects} from 'assert'
-const s3 = new S3({})
+import { S3, config } from 'aws-sdk';
+import { AWSConfig } from './types/types';
+const s3 = new S3({});
 
 export const initAWS = (input: AWSConfig): void => {
   config.update({
     ...input
-  })
-}
+  });
+};
 
 export const getS3Object = async (
-  {Bucket, Key}: S3Base,
-  branchName: string
+  bucketName: string,
+  key: string
 ): Promise<S3.Body | undefined> => {
   return new Promise((res, rej) => {
-    core.info(`getting data from ${Bucket} with path ${Key}`)
     s3.getObject(
       {
-        Bucket,
-        Key
+        Bucket: bucketName,
+        Key: key
       },
       async (err, data) => {
         if (err) {
-          if (err.message !== 'The specified key does not exist.') {
-            return rej(err)
+          if (err.code !== 'NotFound') {
+            return rej(
+              new Error(
+                `Requested file with key: ${key}, Bucket: ${bucketName} not available - ${err}`
+              )
+            );
           }
-          return res(undefined)
+          return res(undefined);
         }
-        let s3ObjectData: S3.Body | undefined = data.Body
         if (data?.Body) {
-          core.info('Response is generated')
-          s3ObjectData = data.Body
-
-          return res(s3ObjectData)
+          return res(data.Body);
         } else {
-          core.info('nothing is present inside the S3 object')
-          return res(s3ObjectData)
+          return res(undefined);
         }
       }
-    )
-  })
-}
+    );
+  });
+};
 
-export async function createObject(params: S3Object): Promise<boolean> {
+export async function createObject(
+  bucketName: string,
+  key: string,
+  body: string
+): Promise<void> {
   return new Promise((res, rej) => {
-    core.info('Pushing into the object/file')
-    s3.putObject(params, (err: Error, data: S3.PutObjectOutput): void => {
+    const params = {
+      Bucket: bucketName,
+      Key: key,
+      Body: body
+    };
+
+    s3.putObject(params, (err: Error): void => {
       if (err) {
-        core.info('error pushing into the object/file')
-        return rej(false)
+        return rej(
+          `Error while uploading frozen branch details ${body} to s3 bucket ${bucketName} & key ${key} - ${err}`
+        );
       }
-      core.info('Successfully Pushed the data into the object')
-      return res(true)
-    })
-  })
+      return res();
+    });
+  });
 }

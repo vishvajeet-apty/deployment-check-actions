@@ -1,70 +1,34 @@
-import * as core from '@actions/core'
-import {context} from '@actions/github'
-import {wait} from './wait'
-import {AWSError, CostExplorer, S3} from 'aws-sdk'
-import {getS3Object, createObject} from './s3'
-import {S3Base, BundleConfig} from './types/types'
-import {FileS3} from './fileHandler'
+import * as core from '@actions/core';
+import { getS3Object, createObject } from './s3';
+import { FrozenBranches } from './fileHandler';
 
-import {
-  branchName,
-  bucketName,
-  deploy_environment,
-  configPath,
-  targetBranch
-} from './config'
-import {info} from 'console'
+import { branchName, bucketName, deploy_environment } from './config';
 
-export let eventType = core.getInput('EVENT_TYPE')
+export const eventType = core.getInput('EVENT_TYPE');
 
 async function run(): Promise<void> {
+  const s3FileKey = `assist/${deploy_environment}.json`;
+  let frozenBranches;
   try {
-    const s3Params = {
-      Bucket: bucketName,
-      Key: `assist/${deploy_environment}.json`
-    }
-
-    const branchObject = {
-      branches: [`${branchName}`]
-    }
-    let fileS3Data = await getS3Object(s3Params, branchName)
-    if (fileS3Data)
-      core.info(`fileS3DataAfterFetching : ${fileS3Data.toString()}`)
-
-    if (!fileS3Data) {
-      const isObjectCreated = await createObject({
-        Bucket: bucketName,
-        Key: `assist/${deploy_environment}.json`,
-        Body: JSON.stringify(branchObject)
-      })
+    const frozenBranchData = await getS3Object(bucketName, s3FileKey);
+    if (!frozenBranchData) {
+      frozenBranches = new FrozenBranches([branchName]);
     } else {
-      let s3Object = JSON.parse(fileS3Data.toString())
-      let fileS3Object = new FileS3(s3Object.branches)
+      frozenBranches = FrozenBranches.FromJsonString(
+        frozenBranchData.toString()
+      ).withBranch(branchName);
+    }
 
-      const branchData = fileS3Object.addBranch(branchName)
-      const branchDataObject = {
-        branches: branchData
-      }
-      await createObject({
-        Bucket: bucketName,
-        Key: `assist/${deploy_environment}.json`,
-        Body: JSON.stringify(branchDataObject)
-      })
-    }
-    core.info(
-      JSON.stringify({
-        branchName,
-        bucketName,
-        configPath,
-        targetBranch,
-        deploy_environment
-      })
-    )
-  } catch (error) {
-    if (error instanceof Error) {
-      core.info('output the error!!')
-      core.setFailed(error.message)
-    }
+    await createObject(
+      bucketName,
+      `assist/${deploy_environment}.json`,
+      frozenBranches.toJsonString()
+    );
+  } catch (err) {
+    core.setFailed(
+      `Error while checking/updating frozen branch details to S3 - ${err}`
+    );
   }
 }
-run()
+
+run();

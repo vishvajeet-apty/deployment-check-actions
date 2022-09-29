@@ -1,24 +1,28 @@
-import {S3} from 'aws-sdk'
-import * as core from '@actions/core'
-import {countReset} from 'console'
-import {truncateSync} from 'fs'
-
-export class FileS3 {
+export class FrozenBranches {
   private branches: string[]
 
-  constructor(data: string[]) {
-    this.branches = [...data]
+  constructor(branches: string[]) {
+    this.branches = branches;
   }
-  addBranch(branchName: string): string[] {
-    const allBranches = this.branches
-    allBranches.push(branchName)
-    return allBranches
+
+  static FromJsonString(data: string) {
+    return new FrozenBranches(JSON.parse(data).branches);
   }
+
+  toJsonString(): string {
+    return JSON.stringify({ branches: this.branches });
+  }
+
+  withBranch(branchName: string): FrozenBranches {
+    this.branches.push(branchName);
+    return this;
+  }
+
   hasBranch(branchName: string): boolean {
-    if (this.branches.includes(branchName)) return true
-    return false
+    if (this.branches.includes(branchName)) return true;
+    return false;
   }
   getBranches(): string[] {
-    return this.branches
+    return this.branches;
   }
 }
