@@ -1,4 +1,6 @@
 import { S3, config } from 'aws-sdk';
+import * as core from '@actions/core'
+import { countReset } from 'console';
 import { AWSConfig } from './types/types';
 const s3 = new S3({});
 
@@ -21,6 +23,7 @@ export const getS3Object = async (
       async (err, data) => {
         if (err) {
           if (err.code !== 'NotFound') {
+              core.info(err.code);
             return rej(
               new Error(
                 `Requested file with key: ${key}, Bucket: ${bucketName} not available - ${err}`
