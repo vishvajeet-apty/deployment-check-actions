@@ -22,7 +22,7 @@ export const getS3Object = async (
       },
       async (err, data) => {
         if (err) {
-          if (err.code !== 'NotFound') {
+          if (err.code !== 'NoSuchKey') {
               core.info(err.code);
             return rej(
               new Error(
