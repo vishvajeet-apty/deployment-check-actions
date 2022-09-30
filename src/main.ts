@@ -17,7 +17,6 @@ async function run(): Promise<void> {
       frozenBranches = FrozenBranches.FromJsonString(
         frozenBranchData.toString()
       ).withBranch(branchName);
-      core.info(JSON.stringify(frozenBranches))
     }
 
     await createObject(
@@ -25,8 +24,6 @@ async function run(): Promise<void> {
       `assist/${deploy_environment}.json`,
       frozenBranches.toJsonString()
     );
-    const data = frozenBranches.getBranches();
-    core.info(JSON.stringify(data));
   } catch (err) {
     core.setFailed(
       `Error while checking/updating frozen branch details to S3 - ${err}`
