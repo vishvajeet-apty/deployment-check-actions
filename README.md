@@ -16,7 +16,7 @@ If run successfully it will store the current deployed branch onto the S3 Bucket
 
 ## Code in Main
 
->         BRANCH_NAME: "${{github.event.inputs.Branch}}"
+          BRANCH_NAME: "${{github.event.inputs.Branch}}"
           ENVIRONMENT_NAME: "${{github.event.inputs.Environment}}"
           BUCKET_NAME: "name-of-the-bucket"
           REGION: "us-east-1"
@@ -31,30 +31,31 @@ If run successfully it will store the current deployed branch onto the S3 Bucket
 
 The action.yml defines the inputs and output for your action.
 
-> name: 'Deployment check action'
-description: 'Update the S3 bucket with the latest deployed branch'
-author: 'Vishvajeet Singh'
-inputs:
-  BRANCH_NAME:
-    required: true
-    description: "the name of the current branch"
-  ENVIRONMENT_NAME:
-    required: true
-    description: "the name of the environment variable"
-  BUCKET_NAME:
-    required: true
-    description: 'AWS S3 bucket to push the data'
-  REGION:
-    required: true
-    description: 'AWS S3 bucket region'
-  CONFIG_PATH:
-    required: true
+ 
+        name: 'Deployment check action'
+        description: 'Update the S3 bucket with the latest deployed branch'
+        author: 'Vishvajeet Singh'
+        inputs:
+          BRANCH_NAME:
+            required: true
+            description: "the name of the current branch"
+          ENVIRONMENT_NAME:
+            required: true
+            description: "the name of the environment variable"
+          BUCKET_NAME:
+            required: true
+            description: 'AWS S3 bucket to push the data'
+          REGION:
+            required: true
+            description: 'AWS S3 bucket region'
+          CONFIG_PATH:
+            required: true
     description: 'Path to config file used in action'
-  TARGET_BRANCH:
-    required: true
-    description: 'Target branch of PR'
-runs:
-  using: 'node16'
-  main: 'dist/index.js'
+          TARGET_BRANCH:
+            required: true
+            description: 'Target branch of PR'
+        runs:
+          using: 'node16'
+          main: 'dist/index.js'
 
 
