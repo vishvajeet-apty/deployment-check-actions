@@ -4,7 +4,6 @@ import { FrozenBranches } from './fileHandler';
 
 import { branchName, bucketName, deploy_environment } from './config';
 
-export const eventType = core.getInput('EVENT_TYPE');
 
 async function run(): Promise<void> {
   const s3FileKey = `assist/${deploy_environment}.json`;
@@ -17,6 +16,7 @@ async function run(): Promise<void> {
       frozenBranches = FrozenBranches.FromJsonString(
         frozenBranchData.toString()
       ).withBranch(branchName);
+      core.info(JSON.stringify(frozenBranches.getBranches()));
     }
 
     await createObject(
