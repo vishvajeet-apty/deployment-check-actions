@@ -22,6 +22,7 @@ export class FrozenBranches {
     if (this.branches.includes(branchName)) return true;
     return false;
   }
+  
   getBranches(): string[] {
     return this.branches;
   }
