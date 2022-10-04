@@ -4,102 +4,57 @@
 
 # Create a JavaScript Action using TypeScript
 
-Use this template to bootstrap the creation of a TypeScript action.:rocket:
+Use this repository to run as a job in manual deployment action in Apty services(assist,account,etc)
 
-This template includes compilation support, tests, a validation workflow, publishing, and versioning guidance.  
+This repository is purely written as a standard typescript action.
 
-If you are new, there's also a simpler introduction.  See the [Hello World JavaScript Action](https://github.com/actions/hello-world-javascript-action)
+If run successfully it will store the current deployed branch onto the S3 Bucket which can used by any other repository like its sibling repository(push-PR-blocker) under Apty.
 
-## Create an action from this template
+## Use this action in an apty service.
 
-Click the `Use this Template` and provide the new repo details for your action
+> In the manual_deploy workflow create a job which uses aptyInc/deployment-check-actions@main and provide the inputs mentioned below.
 
 ## Code in Main
 
-> First, you'll need to have a reasonably modern version of `node` handy. This won't work with versions older than 9, for instance.
+>         BRANCH_NAME: "${{github.event.inputs.Branch}}"
+          ENVIRONMENT_NAME: "${{github.event.inputs.Environment}}"
+          BUCKET_NAME: "name-of-the-bucket"
+          REGION: "us-east-1"
+          CONFIG_PATH: "./"
+          TARGET_BRANCH: "${{github.event.pull_request.base.ref}}"
+        env:
+          AWS_ACCESS_KEY_ID: ${{secrets.AWS_ACCESS_KEY_ID}}
+          AWS_SECRET_ACCESS_KEY: ${{secrets.AWS_SECRET_ACCESS_KEY}}
 
-Install the dependencies  
-```bash
-$ npm install
-```
-
-Build the typescript and package it for distribution
-```bash
-$ npm run build && npm run package
-```
-
-Run the tests :heavy_check_mark:  
-```bash
-$ npm test
-
- PASS  ./index.test.js
-  ✓ throws invalid number (3ms)
-  ✓ wait 500 ms (504ms)
-  ✓ test runs (95ms)
-
-...
-```
 
 ## Change action.yml
 
 The action.yml defines the inputs and output for your action.
 
-Update the action.yml with your name, description, inputs and outputs for your action.
+> name: 'Deployment check action'
+description: 'Update the S3 bucket with the latest deployed branch'
+author: 'Vishvajeet Singh'
+inputs:
+  BRANCH_NAME:
+    required: true
+    description: "the name of the current branch"
+  ENVIRONMENT_NAME:
+    required: true
+    description: "the name of the environment variable"
+  BUCKET_NAME:
+    required: true
+    description: 'AWS S3 bucket to push the data'
+  REGION:
+    required: true
+    description: 'AWS S3 bucket region'
+  CONFIG_PATH:
+    required: true
+    description: 'Path to config file used in action'
+  TARGET_BRANCH:
+    required: true
+    description: 'Target branch of PR'
+runs:
+  using: 'node16'
+  main: 'dist/index.js'
 
-See the [documentation](https://help.github.com/en/articles/metadata-syntax-for-github-actions)
 
-## Change the Code
-
-Most toolkit and CI/CD operations involve async operations so the action is run in an async function.
-
-```javascript
-import * as core from '@actions/core';
-...
-
-async function run() {
-  try { 
-      ...
-  } 
-  catch (error) {
-    core.setFailed(error.message);
-  }
-}
-
-run()
-```
-
-See the [toolkit documentation](https://github.com/actions/toolkit/blob/master/README.md#packages) for the various packages.
-
-## Publish to a distribution branch
-
-Actions are run from GitHub repos so we will checkin the packed dist folder. 
-
-Then run [ncc](https://github.com/zeit/ncc) and push the results:
-```bash
-$ npm run package
-$ git add dist
-$ git commit -a -m "prod dependencies"
-$ git push origin releases/v1
-```
-
-Note: We recommend using the `--license` option for ncc, which will create a license file for all of the production node modules used in your project.
-
-Your action is now published! :rocket: 
-
-See the [versioning documentation](https://github.com/actions/toolkit/blob/master/docs/action-versioning.md)
-
-## Validate
-
-You can now validate the action by referencing `./` in a workflow in your repo (see [test.yml](.github/workflows/test.yml))
-
-```yaml
-uses: ./
-with:
-  milliseconds: 1000
-```
-
-See the [actions tab](https://github.com/actions/typescript-action/actions) for runs of this action! :rocket:
-
-## Usage:
-
-After testing you can [create a v1 tag](https://github.com/actions/toolkit/blob/master/docs/action-versioning.md) to reference the stable and latest V1 action
