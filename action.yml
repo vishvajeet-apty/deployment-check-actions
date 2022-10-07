@@ -11,6 +11,9 @@ inputs:
   BUCKET_NAME:
     required: true
     description: 'AWS S3 bucket to push the data'
+  SERVICE_NAME:
+    required: true
+    description: 'Name of the service using this action'
   REGION:
     required: true
     description: 'AWS S3 bucket region'
