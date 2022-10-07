@@ -13,6 +13,7 @@ async function run(): Promise<void> {
       process.exit(0);
     }
     const frozenBranchData = await getS3Object(bucketName, s3FileKey);
+    core.info(JSON.stringify(frozenBranchData?.toString))
     if (!frozenBranchData) {
       frozenBranches = new FrozenBranches([branchName]);
     } else {
@@ -27,7 +28,7 @@ async function run(): Promise<void> {
       `${serviceName}/${deploy_environment}.json`,
       frozenBranches.toJsonString()
     );
-    core.info(JSON.stringify(frozenBranches.getBranches()));
+    
   } catch (err) {
     core.setFailed(
       `Error while checking/updating frozen branch details to S3 - ${err}`
