@@ -17,9 +17,6 @@ inputs:
   REGION:
     required: true
     description: 'AWS S3 bucket region'
-  CONFIG_PATH:
-    required: true
-    description: 'Path to config file used in action'
   TARGET_BRANCH:
     required: true
     description: 'Target branch of PR'
